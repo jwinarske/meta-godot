@@ -48,21 +48,21 @@ TARGET_ARCH_NAME:x86-64 = "x86_64"
 TARGET_ARCH_NAME:riscv64 = "rv64"
 
 
-PACKAGECONFIG ??=	" \
-    sowrap lto pulseaudio fontconfig dbus udev touch \
+PACKAGECONFIG:class-target ??= " \
+    sowrap lto fontconfig dbus udev touch \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
 "
-PACKAGECONFIG:aarch64:append ??= " \
+PACKAGECONFIG:class-target:aarch64:append ??= " \
     sys_brotli sys_freetype sys_graphite sys_harfbuzz sys_icu4c \
     sys_libogg sys_libpng sys_libtheora sys_libvorbis sys_libwebp \
     sys_zlib sys_zstd \
 "
-PACKAGECONFIG:x86_64:append ??= " \
+PACKAGECONFIG:class-target:x86_64:append ??= " \
     sys_brotli sys_freetype sys_graphite sys_harfbuzz sys_icu4c \
     sys_libogg sys_libpng sys_libtheora sys_libvorbis sys_libwebp \
     sys_zlib sys_zstd \
 "
-PACKAGECONFIG:riscv64:append ??= " \
+PACKAGECONFIG:class-target:riscv64:append ??= " \
     sys_brotli sys_freetype sys_graphite sys_harfbuzz sys_icu4c \
     sys_libogg sys_libpng sys_libtheora sys_libvorbis sys_libwebp \
     sys_zlib sys_zstd \
@@ -113,7 +113,15 @@ PACKAGECONFIG[sys_zstd] = "builtin_zstd=no, builtin_zstd=yes,zstd"
 PACKAGECONFIG[module_denoise] = "module_denoise_enabled=yes, module_denoise_enabled=no"
 PACKAGECONFIG[module_raycast] = "module_raycast=yes, module_raycast=no"
 
-do_compile () {
+do_compile:class-native () {
+
+    cd ${S}
+    scons p=linuxbsd target=editor \
+        progress=no verbose=yes no_editor_splash=yes \
+        import_env_vars="$(env)"
+}
+
+do_compile:class-target () {
 
     cd ${S}
     scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
@@ -132,3 +140,7 @@ do_install () {
 }
 
 INSANE_SKIP:${PN} = "already-stripped"
+
+FILES:${PN}-dev:class-native += "${datadir}"
+
+BBCLASSEXTEND = "native nativesdk"
