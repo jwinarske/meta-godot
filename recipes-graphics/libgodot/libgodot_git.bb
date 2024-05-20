@@ -5,8 +5,8 @@
 SUMMARY = "GODOT Multi-platform 2D and 3D game engine"
 DESCRIPTION = "Your free, open‑source game engine."
 AUTHOR = "GODOT Engine authors"
-HOMEPAGE = "https://github.com/godotengine/godot"
-BUGTRACKER = "https://github.com/godotengine/godot/issues"
+HOMEPAGE = "https://github.com/migeran/libgodot_project"
+BUGTRACKER = "https://github.com/migeran/libgodot_project/issues"
 SECTION = "graphics"
 
 LICENSE = "MIT"
@@ -21,8 +21,8 @@ RDEPENDS:${PN} += "\
     ca-certificates \
 "
 
-SRCREV = "15073afe3856abd2aa1622492fe50026c7d63dc1"
-SRC_URI = "git://github.com/godotengine/godot.git;protocol=https;lfs=0;nobranch=1"
+SRCREV = "a82f487e7814219d4c4807bb147976dd8eefbf1c"
+SRC_URI = "git://github.com/migeran/godot.git;protocol=https;lfs=0;nobranch=1"
 
 S = "${WORKDIR}/git"
 
@@ -68,16 +68,17 @@ PACKAGECONFIG:class-target:riscv64:append ??= " \
     sys_zlib sys_zstd \
 "
 
+# remove opengl if vulkan and opengl are present.
+PACKAGECONFIG:remove = "${@bb.utils.contains('DISTRO_FEATURES', 'vulkan opengl', 'opengl', '', d)}"
 
-# remove x11 if wayland and x11 present.
+# remove x11 if wayland and x11 are present.
 PACKAGECONFIG:remove = "${@bb.utils.contains('DISTRO_FEATURES', 'wayland x11', 'x11', '', d)}"
 
 # append features if present
 PACKAGECONFIG:append = "${@bb.utils.filter('DISTRO_FEATURES', 'alsa opengl vulkan', d)}"
 
 PACKAGECONFIG[opengl] = "opengl3=yes, opengl3=no, virtual/egl"
-PACKAGECONFIG[vulkan] = "vulkan=yes, vulkan=no, glslang"
-PACKAGECONFIG[volk] = "use_volk=yes, use_volk=no, vulkan-volk"
+PACKAGECONFIG[vulkan] = "vulkan=yes use_volk=yes, vulkan=no use_volk=no, glslang vulkan-volk"
 
 PACKAGECONFIG[wayland] = "wayland=yes, wayland=no, wayland wayland-native"
 PACKAGECONFIG[libdecor] = "libdecor=yes, libdecor=no, libdecor"
@@ -110,6 +111,9 @@ PACKAGECONFIG[sys_libwebp] = "builtin_libwebp=no, builtin_libwebp=yes,libwebp"
 PACKAGECONFIG[sys_zlib] = "builtin_zlib=no, builtin_zlib=yes,zlib"
 PACKAGECONFIG[sys_zstd] = "builtin_zstd=no, builtin_zstd=yes,zstd"
 
+PACKAGECONFIG[module_denoise] = "module_denoise_enabled=yes, module_denoise_enabled=no"
+PACKAGECONFIG[module_raycast] = "module_raycast=yes, module_raycast=no"
+
 do_compile:class-native () {
 
     cd ${S}
@@ -118,11 +122,18 @@ do_compile:class-native () {
         import_env_vars=BUILD_NM,BUILD_RANLIB,BUILD_STRIP,CC,CCLD,CFLAGS,CPP,CPPFLAGS,CXX,CXXFLAGS,GIT_CEILING_DIRECTORIES,HOME,LC_ALL,LD,LDFLAGS,LOGNAME,MAKE,NM,OBJCOPY,OBJDUMP,OMP_NUM_THREADS,PATH,PERL_HASH_SEED,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH,PSEUDO_DISABLED,PSEUDO_UNLOAD,PYTHONHASHSEED,RANLIB,READELF,SOURCE_DATE_EPOCH,STRINGS,STRIP,TZ,USER
 }
 
+do_install:class-native () {
+
+    install -d ${D}${bindir}
+    install -m0755 ${S}/bin/godot.linuxbsd.editor.${TARGET_ARCH_NAME} ${D}${bindir}/libgodot
+}
+
 do_compile:class-target () {
 
     cd ${S}
     scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
         progress=no verbose=yes no_editor_splash=yes \
+        library_type=shared_library \
         ${PACKAGECONFIG_CONFARGS} \
         CC="${CC}" cflags="${CFLAGS}" \
         CXX="${CXX}" cxxflags="${CXXFLAGS}" \
@@ -130,10 +141,10 @@ do_compile:class-target () {
         import_env_vars=BUILD_NM,BUILD_RANLIB,BUILD_STRIP,CC,CCLD,CFLAGS,CPP,CPPFLAGS,CXX,CXXFLAGS,GIT_CEILING_DIRECTORIES,HOME,LC_ALL,LD,LDFLAGS,LOGNAME,MAKE,NM,OBJCOPY,OBJDUMP,OMP_NUM_THREADS,PATH,PERL_HASH_SEED,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH,PSEUDO_DISABLED,PSEUDO_UNLOAD,PYTHONHASHSEED,RANLIB,READELF,SOURCE_DATE_EPOCH,STRINGS,STRIP,TZ,USER
 }
 
-do_install () {
+do_install:class-target () {
 
-    install -d ${D}${bindir}
-    install -m0755 ${S}/bin/godot.linuxbsd.editor.${TARGET_ARCH_NAME} ${D}${bindir}/godot
+    install -d ${D}${libdir}
+    install -m0755 ${S}/bin/libgodot.linuxbsd.editor.${TARGET_ARCH_NAME}.so ${D}${libdir}/libgodot.so
 }
 
 INSANE_SKIP:${PN} = "already-stripped"
