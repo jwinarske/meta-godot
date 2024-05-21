@@ -1,5 +1,8 @@
 # Changelog
 
+May 21, 2024
+1. hard switch to clang for godot_4.2.2; will revisit later
+
 May 20, 2024
 1. libgodot and libgodot-native recipe
 2. libgodot-sample application

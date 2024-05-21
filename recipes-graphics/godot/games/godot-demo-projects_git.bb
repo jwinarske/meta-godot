@@ -10,7 +10,7 @@ BUGTRACKER = "https://github.com/godotengine/godot-demo-projects/issues"
 SECTION = "graphics"
 
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://LICENSE.md;md5=4f0aa3805663712e6417e4f6486cb791"
+LIC_FILES_CHKSUM = "file://LICENSE.md;md5=ad1317f093b82a7268bcdcbf75782b20"
 
 RDEPENDS:${PN} += " \
     godot \

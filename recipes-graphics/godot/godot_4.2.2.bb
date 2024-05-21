@@ -12,21 +12,34 @@ SECTION = "graphics"
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=429628d6598a258acb0c2524e08a3036"
 
-DEPENDS += " \
+DEPENDS:class-native += " \
     libxkbcommon \
     python3-scons-native \
 "
 
-RDEPENDS:${PN} += "\
-    ca-certificates \
+DEPENDS:class-target += " \
+    compiler-rt \
+    libcxx \
+    libxkbcommon \
+    python3-scons-native \
 "
 
 SRCREV = "15073afe3856abd2aa1622492fe50026c7d63dc1"
-SRC_URI = "git://github.com/godotengine/godot.git;protocol=https;lfs=0;nobranch=1"
+SRC_URI = " \
+    git://github.com/godotengine/godot.git;protocol=https;lfs=0;nobranch=1 \
+    file://0001-Add-AS-AR-RANLIB-RC.patch \
+    file://0001-enable-clang.patch \
+"
 
 S = "${WORKDIR}/git"
 
 BUILD_DIR="${S}/build"
+
+
+RUNTIME:class-target = "llvm"
+TOOLCHAIN:class-target = "clang"
+PREFERRED_PROVIDER_libgcc:class-target = "compiler-rt"
+LIBCPLUSPLUS:class-target = "-stdlib=libc++"
 
 inherit pkgconfig
 
@@ -49,25 +62,8 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 
 PACKAGECONFIG:class-target ??= " \
-    sowrap lto fontconfig dbus udev touch \
-    ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
+    sowrap fontconfig dbus udev touch \
 "
-PACKAGECONFIG:class-target:aarch64:append ??= " \
-    sys_brotli sys_freetype sys_graphite sys_harfbuzz sys_icu4c \
-    sys_libogg sys_libpng sys_libtheora sys_libvorbis sys_libwebp \
-    sys_zlib sys_zstd \
-"
-PACKAGECONFIG:class-target:x86_64:append ??= " \
-    sys_brotli sys_freetype sys_graphite sys_harfbuzz sys_icu4c \
-    sys_libogg sys_libpng sys_libtheora sys_libvorbis sys_libwebp \
-    sys_zlib sys_zstd \
-"
-PACKAGECONFIG:class-target:riscv64:append ??= " \
-    sys_brotli sys_freetype sys_graphite sys_harfbuzz sys_icu4c \
-    sys_libogg sys_libpng sys_libtheora sys_libvorbis sys_libwebp \
-    sys_zlib sys_zstd \
-"
-
 
 # remove x11 if wayland and x11 present.
 PACKAGECONFIG:remove = "${@bb.utils.contains('DISTRO_FEATURES', 'wayland x11', 'x11', '', d)}"
@@ -76,18 +72,16 @@ PACKAGECONFIG:remove = "${@bb.utils.contains('DISTRO_FEATURES', 'wayland x11', '
 PACKAGECONFIG:append = "${@bb.utils.filter('DISTRO_FEATURES', 'alsa opengl vulkan', d)}"
 
 PACKAGECONFIG[opengl] = "opengl3=yes, opengl3=no, virtual/egl"
-PACKAGECONFIG[vulkan] = "vulkan=yes, vulkan=no, glslang"
-PACKAGECONFIG[volk] = "use_volk=yes, use_volk=no, vulkan-volk"
+PACKAGECONFIG[vulkan] = "vulkan=yes use_volk=yes, vulkan=no use_volk=no, glslang vulkan-loader vulkan-volk"
 
 PACKAGECONFIG[wayland] = "wayland=yes, wayland=no, wayland wayland-native"
 PACKAGECONFIG[libdecor] = "libdecor=yes, libdecor=no, libdecor"
 PACKAGECONFIG[x11] = "x11=yes, x11=no, libx11 libxcursor xinerama xext xrandr libxrender libxi"
 
-PACKAGECONFIG[llvm] = "use_llvm=yes, use_llvm=no,"
 PACKAGECONFIG[static_cpp] = "use_static_cpp=yes, use_static_cpp=no"
-PACKAGECONFIG[debug] = "debug_symbols=yes, debug_symbols=no"
 PACKAGECONFIG[lto] = "lto=auto, lto=none"
 PACKAGECONFIG[sowrap] = "use_sowrap=yes, use_sowrap=no"
+PACKAGECONFIG[debug] = "debug_symbols=yes, debug_symbols=no"
 
 PACKAGECONFIG[alsa] = "alsa=yes, alsa=no, alsa-lib"
 PACKAGECONFIG[pulseaudio] = "pulseaudio=yes, pulseaudio=no, pulseaudio"
@@ -113,31 +107,42 @@ PACKAGECONFIG[sys_zstd] = "builtin_zstd=no, builtin_zstd=yes,zstd"
 do_compile:class-native () {
 
     cd ${S}
-    scons p=linuxbsd target=editor \
-        progress=no verbose=yes no_editor_splash=yes \
-        import_env_vars=BUILD_NM,BUILD_RANLIB,BUILD_STRIP,CC,CCLD,CFLAGS,CPP,CPPFLAGS,CXX,CXXFLAGS,GIT_CEILING_DIRECTORIES,HOME,LC_ALL,LD,LDFLAGS,LOGNAME,MAKE,NM,OBJCOPY,OBJDUMP,OMP_NUM_THREADS,PATH,PERL_HASH_SEED,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH,PSEUDO_DISABLED,PSEUDO_UNLOAD,PYTHONHASHSEED,RANLIB,READELF,SOURCE_DATE_EPOCH,STRINGS,STRIP,TZ,USER
+    scons p=linuxbsd target=editor production=yes no_editor_splash=yes
 }
 
 do_compile:class-target () {
 
     cd ${S}
     scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
-        progress=no verbose=yes no_editor_splash=yes \
+        use_llvm=yes lto=auto progress=no no_editor_splash=yes verbose=yes \
         ${PACKAGECONFIG_CONFARGS} \
-        CC="${CC}" cflags="${CFLAGS}" \
-        CXX="${CXX}" cxxflags="${CXXFLAGS}" \
-        LINK="${LD}" linkflags="${LDFLAGS}" \
-        import_env_vars=BUILD_NM,BUILD_RANLIB,BUILD_STRIP,CC,CCLD,CFLAGS,CPP,CPPFLAGS,CXX,CXXFLAGS,GIT_CEILING_DIRECTORIES,HOME,LC_ALL,LD,LDFLAGS,LOGNAME,MAKE,NM,OBJCOPY,OBJDUMP,OMP_NUM_THREADS,PATH,PERL_HASH_SEED,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH,PSEUDO_DISABLED,PSEUDO_UNLOAD,PYTHONHASHSEED,RANLIB,READELF,SOURCE_DATE_EPOCH,STRINGS,STRIP,TZ,USER
+        CC="${CC}" CFLAGS="${CFLAGS}" CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" \
+        AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" LINK="${CXX} ${LDFLAGS} -fuse-ld=lld"
 }
 
-do_install () {
+do_install:class-native () {
 
     install -d ${D}${bindir}
     install -m0755 ${S}/bin/godot.linuxbsd.editor.${TARGET_ARCH_NAME} ${D}${bindir}/godot
 }
 
+do_install:class-target () {
+
+    install -d ${D}${bindir}
+    install -m0755 ${S}/bin/godot.linuxbsd.editor.${TARGET_ARCH_NAME}.llvm ${D}${bindir}/godot
+}
+
 INSANE_SKIP:${PN} = "already-stripped"
 
 FILES:${PN}-dev:class-native += "${datadir}"
+
+RDEPENDS:${PN}:class-target += " \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'libx11 libxcursor xinerama xext xrandr libxrender libxi', '', d)} \
+    fontconfig dbus udev \
+"
+
+RRECOMMENDS:${PN}:class-target += " \
+    liberation-fonts \
+"
 
 BBCLASSEXTEND = "native nativesdk"
