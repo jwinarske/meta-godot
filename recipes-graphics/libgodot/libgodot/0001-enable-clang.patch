@@ -1,0 +1,27 @@
+From 9c186e34c76a62c179a00f85c3e5102d3bcb94ec Mon Sep 17 00:00:00 2001
+From: Joel Winarske <joel.winarske@gmail.com>
+Date: Tue, 21 May 2024 16:21:03 -0700
+Subject: [PATCH] enable clang
+
+Signed-off-by: Joel Winarske <joel.winarske@gmail.com>
+---
+ platform/linuxbsd/detect.py | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/platform/linuxbsd/detect.py b/platform/linuxbsd/detect.py
+index 27dec73b65..66e7763ab1 100644
+--- a/platform/linuxbsd/detect.py
++++ b/platform/linuxbsd/detect.py
+@@ -110,9 +110,6 @@ def configure(env: "SConsEnvironment"):
+         env["use_llvm"] = True
+ 
+     if env["use_llvm"]:
+-        if "clang++" not in os.path.basename(env["CXX"]):
+-            env["CC"] = "clang"
+-            env["CXX"] = "clang++"
+         env.extra_suffix = ".llvm" + env.extra_suffix
+ 
+     if env["linker"] != "default":
+-- 
+2.45.0
+

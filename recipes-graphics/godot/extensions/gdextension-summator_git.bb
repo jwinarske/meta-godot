@@ -56,9 +56,6 @@ do_configure:prepend() {
 
 do_install:append() {
 
-    mv ${D}${libdir}/libgdsummator.linux.template_debug.${TARGET_ARCH_NAME}.so ${S}/game/bin
-    rm -rf ${D}${libdir}
-
     # copy and set architecture
     cp ${WORKDIR}/export_presets.cfg ${S}/game/export_presets.cfg
     sed -i "s/x86_64/${TARGET_ARCH_NAME}/g" ${S}/game/export_presets.cfg
@@ -67,6 +64,10 @@ do_install:append() {
     cp -r ${S}/game/* ${D}${datadir}/godot/gdsummator/
 }
 
-INSANE_SKIP:${PN} += " libdir"
+SOLIBS = ".so"
+FILES_SOLIBSDEV = ""
 
-FILES:${PN} = "${datadir}/godot/gdsummator"
+FILES:${PN} += " \
+    ${libdir} \
+    ${datadir}/godot/gdsummator \
+"

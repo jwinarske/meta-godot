@@ -41,4 +41,7 @@ do_configure:prepend() {
     mv ${WORKDIR}/CMakeLists.txt ${S}
 }
 
-FILES:${PN} = " ${libdir}"
+SOLIBS = ".so"
+FILES_SOLIBSDEV = ""
+
+FILES:${PN} = "${libdir}"

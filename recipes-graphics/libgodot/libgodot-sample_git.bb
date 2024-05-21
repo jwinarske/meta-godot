@@ -18,9 +18,9 @@ DEPENDS += " \
     libgodot-native \
 "
 
-# RDEPENDS:${PN} += " \
-#     libgodot \
-# "
+RDEPENDS:${PN} += " \
+    libgodot \
+"
 
 SRC_URI = " \
     git://github.com/migeran/libgodot_project.git;protocol=https;lfs=0;branch=main;name=libgodot \

@@ -138,7 +138,7 @@ FILES:${PN}-dev:class-native += "${datadir}"
 
 RDEPENDS:${PN}:class-target += " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'libx11 libxcursor xinerama xext xrandr libxrender libxi', '', d)} \
-    fontconfig dbus udev \
+    ca-certificates fontconfig dbus udev \
 "
 
 RRECOMMENDS:${PN}:class-target += " \

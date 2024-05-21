@@ -1,0 +1,28 @@
+From 91ab925756d571eea67a60e21b7e9d1a1e925c7a Mon Sep 17 00:00:00 2001
+From: Joel Winarske <joel.winarske@gmail.com>
+Date: Tue, 21 May 2024 16:18:21 -0700
+Subject: [PATCH] enable clang
+
+Signed-off-by: Joel Winarske <joel.winarske@gmail.com>
+---
+ SConstruct | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/SConstruct b/SConstruct
+index d971d25e3a..23556b7853 100644
+--- a/SConstruct
++++ b/SConstruct
+@@ -272,6 +272,10 @@ opts.Add(BoolVariable("builtin_zstd", "Use the built-in Zstd library", True))
+ opts.Add("CXX", "C++ compiler binary")
+ opts.Add("CC", "C compiler binary")
+ opts.Add("LINK", "Linker binary")
++opts.Add("AS", "Assembler binary")
++opts.Add("AR", "Archiver binary")
++opts.Add("RANLIB", "Ranlib binary")
++opts.Add("RC", "Resource compiler binary")
+ opts.Add("cppdefines", "Custom defines for the pre-processor")
+ opts.Add("ccflags", "Custom flags for both the C and C++ compilers")
+ opts.Add("cxxflags", "Custom flags for the C++ compiler")
+-- 
+2.45.0
+
