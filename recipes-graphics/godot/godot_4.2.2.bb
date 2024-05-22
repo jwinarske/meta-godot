@@ -62,7 +62,8 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 
 PACKAGECONFIG:class-target ??= " \
-    sowrap fontconfig dbus udev touch \
+    sowrap ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
+    fontconfig dbus udev touch \
 "
 
 # remove x11 if wayland and x11 present.
