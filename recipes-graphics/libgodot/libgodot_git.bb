@@ -65,7 +65,22 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 
 PACKAGECONFIG:class-target ??= " \
-    sowrap fontconfig dbus udev touch \
+    fontconfig \
+    dbus \
+    udev \
+    touch \
+    sys_brotli \
+    sys_freetype \
+    sys_graphite \
+    sys_harfbuzz \
+    sys_icu4c \
+    sys_libogg \
+    sys_libpng \
+    sys_libtheora \
+    sys_libvorbis \
+    sys_libwebp \
+    sys_zlib \
+    sys_zstd \
 "
 
 # remove x11 if wayland and x11 are present.
