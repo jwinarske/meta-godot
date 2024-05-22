@@ -65,7 +65,7 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 
 PACKAGECONFIG:class-target ??= " \
-    ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
+    x11 \
     lto fontconfig dbus udev touch \
     \
     sys_brotli \
@@ -136,7 +136,7 @@ do_compile:class-target () {
         ${PACKAGECONFIG_CONFARGS} \
         CC="${CC}" cflags="${CFLAGS}" \
         CXX="${CXX}" cxxflags="${CXXFLAGS}" \
-        LINK="${CXX} ${LDFLAGS} -fuse-ld=lld" \
+        AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" LINK="${CXX} ${LDFLAGS} -fuse-ld=lld" \
         import_env_vars=PATH,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH
 }
 
