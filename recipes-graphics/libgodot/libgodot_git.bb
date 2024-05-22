@@ -66,7 +66,7 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 PACKAGECONFIG:class-target ??= " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
-    fontconfig dbus udev touch \
+    lto fontconfig dbus udev touch \
     \
     sys_brotli \
     sys_freetype \
