@@ -30,7 +30,7 @@ RDEPENDS:${PN} += "\
 
 SRCREV = "a82f487e7814219d4c4807bb147976dd8eefbf1c"
 SRC_URI = " \
-    git://github.com/migeran/godot.git;protocol=https;lfs=0;nobranch=1 \
+    git://github.com/migeran/godot.git;protocol=https;lfs=0;branch=libgodot_migeran \
     file://0001-Add-AS-AR-RANLIB-RC.patch \
     file://0001-enable-clang.patch \
 "
@@ -101,12 +101,13 @@ PACKAGECONFIG[lto] = "lto=auto, lto=none"
 PACKAGECONFIG[sowrap] = "use_sowrap=yes, use_sowrap=no"
 
 PACKAGECONFIG[alsa] = "alsa=yes, alsa=no, alsa-lib"
-PACKAGECONFIG[pulseaudio] = "pulseaudio=yes, pulseaudio=no, pulseaudio"
-PACKAGECONFIG[fontconfig] = "fontconfig=yes, fontconfig=no, fontconfig"
 PACKAGECONFIG[dbus] = "dbus=yes, dbus=no, dbus"
-PACKAGECONFIG[udev] = "udev=yes, udev=no, udev"
-PACKAGECONFIG[touch] = "touch=yes, touch=no,"
+PACKAGECONFIG[fontconfig] = "fontconfig=yes, fontconfig=no, fontconfig"
 PACKAGECONFIG[openxr] = "openxr=yes, openxr=no"
+PACKAGECONFIG[pulseaudio] = "pulseaudio=yes, pulseaudio=no, pulseaudio"
+PACAKGECONFIG[speechd] = "speechd=yes, speechd=no"
+PACKAGECONFIG[touch] = "touch=yes, touch=no,"
+PACKAGECONFIG[udev] = "udev=yes, udev=no, udev"
 
 PACKAGECONFIG[sys_brotli] = "builtin_brotli=no, builtin_brotli=yes,brotli"
 PACKAGECONFIG[sys_freetype] = "builtin_freetype=no, builtin_freetype=yes,freetype"
@@ -156,5 +157,11 @@ SOLIBS = ".so"
 FILES_SOLIBSDEV = ""
 
 INSANE_SKIP:${PN} = "already-stripped"
+
+RDEPENDS:${PN}:class-target += " \
+    ${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'libx11 libxcursor xinerama libxext xrandr libxrender libxi', '', d)} \
+    ca-certificates fontconfig dbus udev \
+    adwaita-icon-theme-cursors bash liberation-fonts pciutils xdg-user-dirs \
+"
 
 BBCLASSEXTEND = "native nativesdk"

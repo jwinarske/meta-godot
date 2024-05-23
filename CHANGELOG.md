@@ -1,4 +1,7 @@
 # Changelog
+May 23, 2024
+1. godot-master runs on raspberrypi5 core-image-weston with `godot --display-driver wayland --rendering-driver vulkan`
+2. add runtime package dependencies
 
 May 21, 2024
 1. hard switch to clang for godot_4.2.2; will revisit later

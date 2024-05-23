@@ -24,10 +24,9 @@ DEPENDS:class-target += " \
     python3-scons-native \
 "
 
-SRCREV = "15073afe3856abd2aa1622492fe50026c7d63dc1"
+SRCREV = "b947c53ddc08d4314b2ce70ca1bc2adb37b83c37"
 SRC_URI = " \
-    git://github.com/godotengine/godot.git;protocol=https;lfs=0;nobranch=1 \
-    file://0001-Add-AS-AR-RANLIB-RC.patch \
+    git://github.com/godotengine/godot.git;protocol=https;lfs=0;branch=master \
     file://0001-enable-clang.patch \
 "
 
@@ -85,12 +84,13 @@ PACKAGECONFIG[sowrap] = "use_sowrap=yes, use_sowrap=no"
 PACKAGECONFIG[debug] = "debug_symbols=yes, debug_symbols=no"
 
 PACKAGECONFIG[alsa] = "alsa=yes, alsa=no, alsa-lib"
-PACKAGECONFIG[pulseaudio] = "pulseaudio=yes, pulseaudio=no, pulseaudio"
-PACKAGECONFIG[fontconfig] = "fontconfig=yes, fontconfig=no, fontconfig"
 PACKAGECONFIG[dbus] = "dbus=yes, dbus=no, dbus"
-PACKAGECONFIG[udev] = "udev=yes, udev=no, udev"
-PACKAGECONFIG[touch] = "touch=yes, touch=no,"
+PACKAGECONFIG[fontconfig] = "fontconfig=yes, fontconfig=no, fontconfig"
 PACKAGECONFIG[openxr] = "openxr=yes, openxr=no"
+PACKAGECONFIG[pulseaudio] = "pulseaudio=yes, pulseaudio=no, pulseaudio"
+PACAKGECONFIG[speechd] = "speechd=yes, speechd=no"
+PACKAGECONFIG[touch] = "touch=yes, touch=no,"
+PACKAGECONFIG[udev] = "udev=yes, udev=no, udev"
 
 PACKAGECONFIG[sys_brotli] = "builtin_brotli=no, builtin_brotli=yes,brotli"
 PACKAGECONFIG[sys_freetype] = "builtin_freetype=no, builtin_freetype=yes,freetype"
@@ -116,9 +116,12 @@ do_compile:class-target () {
     cd ${S}
     scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
         use_llvm=yes lto=auto progress=no no_editor_splash=yes verbose=yes \
+        library_type=shared_library \
         ${PACKAGECONFIG_CONFARGS} \
-        CC="${CC}" CFLAGS="${CFLAGS}" CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" \
-        AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" LINK="${CXX} ${LDFLAGS} -fuse-ld=lld"
+        CC="${CC}" cflags="${CFLAGS}" \
+        CXX="${CXX}" cxxflags="${CXXFLAGS}" \
+        AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" LINK="${CXX} ${LDFLAGS} -fuse-ld=lld" \
+        import_env_vars=PATH,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH
 }
 
 do_install:class-native () {
