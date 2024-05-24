@@ -66,7 +66,7 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 PACKAGECONFIG:class-target ??= " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
-    sowrap lto fontconfig dbus udev touch \
+    sowrap dbus fontconfig pulseaudio touch udev libdecor \
     \
     sys_brotli \
     sys_freetype \
@@ -95,10 +95,8 @@ PACKAGECONFIG[wayland] = "wayland=yes, wayland=no, wayland wayland-native"
 PACKAGECONFIG[libdecor] = "libdecor=yes, libdecor=no, libdecor"
 PACKAGECONFIG[x11] = "x11=yes, x11=no, libx11 libxcursor xinerama xext xrandr libxrender libxi"
 
-PACKAGECONFIG[static_cpp] = "use_static_cpp=yes, use_static_cpp=no"
-PACKAGECONFIG[debug] = "debug_symbols=yes, debug_symbols=no"
-PACKAGECONFIG[lto] = "lto=auto, lto=none"
 PACKAGECONFIG[sowrap] = "use_sowrap=yes, use_sowrap=no"
+PACKAGECONFIG[debug] = "debug_symbols=yes, debug_symbols=no"
 
 PACKAGECONFIG[alsa] = "alsa=yes, alsa=no, alsa-lib"
 PACKAGECONFIG[dbus] = "dbus=yes, dbus=no, dbus"
@@ -131,12 +129,10 @@ do_compile:class-native () {
 do_compile:class-target () {
 
     cd ${S}
-    scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
-        use_llvm=yes lto=auto progress=no no_editor_splash=yes verbose=yes \
-        library_type=shared_library \
-        ${PACKAGECONFIG_CONFARGS} \
-        CC="${CC}" cflags="${CFLAGS}" \
-        CXX="${CXX}" cxxflags="${CXXFLAGS}" \
+    scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} library_type=shared_library \
+        use_llvm=yes use_static_cpp=yes optimize=speed lto=thin progress=no \
+        no_editor_splash=yes num_jobs=${BB_NUMBER_THREADS} ${PACKAGECONFIG_CONFARGS} \    
+        CC="${CC}" cflags="${CFLAGS}" CXX="${CXX}" cxxflags="${CXXFLAGS}" \
         AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" LINK="${CXX} ${LDFLAGS} -fuse-ld=lld" \
         import_env_vars=PATH,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH
 }

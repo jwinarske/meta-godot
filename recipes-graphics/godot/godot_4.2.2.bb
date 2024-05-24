@@ -63,7 +63,7 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 PACKAGECONFIG:class-target ??= " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
-    sowrap lto fontconfig dbus udev touch \
+    sowrap fontconfig dbus udev touch \
 "
 
 # remove x11 if wayland and x11 present.
@@ -80,7 +80,6 @@ PACKAGECONFIG[libdecor] = "libdecor=yes, libdecor=no, libdecor"
 PACKAGECONFIG[x11] = "x11=yes, x11=no, libx11 libxcursor xinerama libxext xrandr libxrender libxi"
 
 PACKAGECONFIG[static_cpp] = "use_static_cpp=yes, use_static_cpp=no"
-PACKAGECONFIG[lto] = "lto=auto, lto=none"
 PACKAGECONFIG[sowrap] = "use_sowrap=yes, use_sowrap=no"
 PACKAGECONFIG[debug] = "debug_symbols=yes, debug_symbols=no"
 
@@ -115,8 +114,8 @@ do_compile:class-target () {
 
     cd ${S}
     scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
-        use_llvm=yes lto=auto progress=no no_editor_splash=yes verbose=yes \
-        ${PACKAGECONFIG_CONFARGS} \
+        use_llvm=yes optimize=speed lto=thin progress=no no_editor_splash=yes \
+        num_jobs=${BB_NUMBER_THREADS} ${PACKAGECONFIG_CONFARGS} \
         CC="${CC}" CFLAGS="${CFLAGS}" CXX="${CXX}" CXXFLAGS="${CXXFLAGS}" \
         AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" LINK="${CXX} ${LDFLAGS} -fuse-ld=lld"
 }

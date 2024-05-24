@@ -62,7 +62,7 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 PACKAGECONFIG:class-target ??= " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
-    sowrap lto fontconfig dbus udev touch \
+    sowrap dbus fontconfig pulseaudio touch udev libdecor \
 "
 
 # remove x11 if wayland and x11 present.
@@ -71,15 +71,13 @@ PACKAGECONFIG:remove = "${@bb.utils.contains('DISTRO_FEATURES', 'wayland x11', '
 # append features if present
 PACKAGECONFIG:append = "${@bb.utils.filter('DISTRO_FEATURES', 'alsa opengl vulkan', d)}"
 
-PACKAGECONFIG[opengl] = "opengl3=yes, opengl3=no, virtual/egl"
-PACKAGECONFIG[vulkan] = "vulkan=yes use_volk=yes, vulkan=no use_volk=no, glslang vulkan-loader vulkan-volk"
-
 PACKAGECONFIG[wayland] = "wayland=yes, wayland=no, wayland wayland-native"
 PACKAGECONFIG[libdecor] = "libdecor=yes, libdecor=no, libdecor"
 PACKAGECONFIG[x11] = "x11=yes, x11=no, libx11 libxcursor xinerama libxext xrandr libxrender libxi"
 
-PACKAGECONFIG[static_cpp] = "use_static_cpp=yes, use_static_cpp=no"
-PACKAGECONFIG[lto] = "lto=auto, lto=none"
+PACKAGECONFIG[opengl] = "opengl3=yes, opengl3=no, virtual/egl"
+PACKAGECONFIG[vulkan] = "vulkan=yes use_volk=yes, vulkan=no use_volk=no, glslang vulkan-loader vulkan-volk"
+
 PACKAGECONFIG[sowrap] = "use_sowrap=yes, use_sowrap=no"
 PACKAGECONFIG[debug] = "debug_symbols=yes, debug_symbols=no"
 
@@ -115,11 +113,9 @@ do_compile:class-target () {
 
     cd ${S}
     scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
-        use_llvm=yes lto=auto progress=no no_editor_splash=yes verbose=yes \
-        library_type=shared_library \
-        ${PACKAGECONFIG_CONFARGS} \
-        CC="${CC}" cflags="${CFLAGS}" \
-        CXX="${CXX}" cxxflags="${CXXFLAGS}" \
+        use_llvm=yes use_static_cpp=yes optimize=speed lto=thin progress=no \
+        no_editor_splash=yes num_jobs=${BB_NUMBER_THREADS} ${PACKAGECONFIG_CONFARGS} \
+        CC="${CC}" cflags="${CFLAGS}" CXX="${CXX}" cxxflags="${CXXFLAGS}" \
         AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" LINK="${CXX} ${LDFLAGS} -fuse-ld=lld" \
         import_env_vars=PATH,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH
 }
