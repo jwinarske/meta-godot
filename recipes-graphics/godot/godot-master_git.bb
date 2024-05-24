@@ -27,6 +27,7 @@ DEPENDS:class-target += " \
 SRCREV = "b947c53ddc08d4314b2ce70ca1bc2adb37b83c37"
 SRC_URI = " \
     git://github.com/godotengine/godot.git;protocol=https;lfs=0;branch=master \
+    file://0001-Enable-build-config-wayland-yes-use_sowrap-no.patch \
     file://0001-enable-clang.patch \
 "
 
@@ -62,7 +63,7 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 
 PACKAGECONFIG:class-target ??= " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
-    sowrap dbus fontconfig pulseaudio touch udev libdecor \
+    dbus fontconfig pulseaudio touch udev libdecor \
 "
 
 # remove x11 if wayland and x11 present.
