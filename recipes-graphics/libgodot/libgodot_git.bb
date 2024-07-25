@@ -28,7 +28,7 @@ RDEPENDS:${PN} += "\
     ca-certificates \
 "
 
-SRCREV = "a82f487e7814219d4c4807bb147976dd8eefbf1c"
+SRCREV = "92f6c34d10de3f15e214ce3e7604651f3bada446"
 SRC_URI = " \
     git://github.com/migeran/godot.git;protocol=https;lfs=0;branch=libgodot_migeran \
     file://0001-Add-AS-AR-RANLIB-RC.patch \

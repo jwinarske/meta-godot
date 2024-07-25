@@ -64,6 +64,19 @@ TARGET_ARCH_NAME:riscv64 = "rv64"
 PACKAGECONFIG:class-target ??= " \
     ${@bb.utils.filter('DISTRO_FEATURES', 'wayland x11', d)} \
     dbus fontconfig pulseaudio touch udev libdecor \
+    \
+    sys_brotli \
+    sys_freetype \
+    sys_graphite \
+    sys_harfbuzz \
+    sys_icu4c \
+    sys_libogg \
+    sys_libpng \
+    sys_libtheora \
+    sys_libvorbis \
+    sys_libwebp \
+    sys_zlib \
+    sys_zstd \
 "
 
 # remove x11 if wayland and x11 present.
@@ -114,10 +127,18 @@ do_compile:class-target () {
 
     cd ${S}
     scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
-        use_llvm=yes use_static_cpp=yes optimize=speed lto=thin progress=no \
-        no_editor_splash=yes num_jobs=${BB_NUMBER_THREADS} ${PACKAGECONFIG_CONFARGS} \
-        CC="${CC}" cflags="${CFLAGS}" CXX="${CXX}" cxxflags="${CXXFLAGS}" \
-        AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" LINK="${CXX} ${LDFLAGS} -fuse-ld=lld" \
+        use_llvm=yes \
+        use_static_cpp=yes \
+        optimize=speed \
+        lto=thin \
+        progress=yes \
+        no_editor_splash=yes \
+        num_jobs=${BB_NUMBER_THREADS} \
+        ${PACKAGECONFIG_CONFARGS} \
+        CC="${CC}" cflags="${CFLAGS}" \
+        CXX="${CXX}" cxxflags="${CXXFLAGS}" \
+        AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" \
+        LINK="${CXX} ${LDFLAGS} -fuse-ld=lld" \
         import_env_vars=PATH,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH
 }
 
@@ -139,8 +160,19 @@ FILES:${PN}-dev:class-native += "${datadir}"
 
 RDEPENDS:${PN}:class-target += " \
     ${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'libx11 libxcursor xinerama libxext xrandr libxrender libxi', '', d)} \
-    ca-certificates fontconfig dbus udev \
-    adwaita-icon-theme-cursors bash liberation-fonts pciutils xdg-user-dirs \
+    bash \
+    ca-certificates \
+    dbus \
+    fontconfig \
+    pciutils \
+    udev \
+    xdg-user-dirs \
+"
+
+RRECOMMENDS:${PN} += "\
+    adwaita-icon-theme-cursors \
+    liberation-fonts \
+    zenity \
 "
 
 BBCLASSEXTEND = "native nativesdk"
