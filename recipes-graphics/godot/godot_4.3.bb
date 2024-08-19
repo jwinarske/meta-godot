@@ -24,11 +24,12 @@ DEPENDS:class-target += " \
     python3-scons-native \
 "
 
-SRCREV = "b947c53ddc08d4314b2ce70ca1bc2adb37b83c37"
+SRCREV = "77dcf97d82cbfe4e4615475fa52ca03da645dbd8"
 SRC_URI = " \
     git://github.com/godotengine/godot.git;protocol=https;lfs=0;branch=master \
     file://0001-Enable-build-config-wayland-yes-use_sowrap-no.patch \
     file://0001-enable-clang.patch \
+    file://0001-wayland-remove-fields.patch \
 "
 
 S = "${WORKDIR}/git"
