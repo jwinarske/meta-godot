@@ -1,0 +1,26 @@
+From 5444711cb8475d362a9047e8ee715f86780c8ab2 Mon Sep 17 00:00:00 2001
+From: Joel Winarske <joel.winarske@gmail.com>
+Date: Fri, 23 Aug 2024 20:59:23 +0000
+Subject: [PATCH 1/2] wayland thread
+
+Signed-off-by: Joel Winarske <joel.winarske@gmail.com>
+---
+ platform/linuxbsd/wayland/wayland_thread.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/platform/linuxbsd/wayland/wayland_thread.h b/platform/linuxbsd/wayland/wayland_thread.h
+index 775ca71346..76a14dbd6a 100644
+--- a/platform/linuxbsd/wayland/wayland_thread.h
++++ b/platform/linuxbsd/wayland/wayland_thread.h
+@@ -44,7 +44,7 @@
+ #include <wayland-client-core.h>
+ #include <wayland-cursor.h>
+ #ifdef GLES3_ENABLED
+-#include <wayland-egl.h>
++#include <wayland-egl-core.h>
+ #endif
+ #include <xkbcommon/xkbcommon.h>
+ #endif // SOWRAP_ENABLED
+-- 
+2.46.0
+

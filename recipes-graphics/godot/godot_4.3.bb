@@ -18,8 +18,6 @@ DEPENDS:class-native += " \
 "
 
 DEPENDS:class-target += " \
-    compiler-rt \
-    libcxx \
     libxkbcommon \
     python3-scons-native \
 "
@@ -27,20 +25,14 @@ DEPENDS:class-target += " \
 SRCREV = "77dcf97d82cbfe4e4615475fa52ca03da645dbd8"
 SRC_URI = " \
     git://github.com/godotengine/godot.git;protocol=https;lfs=0;branch=master \
-    file://0001-Enable-build-config-wayland-yes-use_sowrap-no.patch \
-    file://0001-enable-clang.patch \
-    file://0001-wayland-remove-fields.patch \
+    file://0001-wayland-thread.patch \
+    file://0002-enable-clang.patch \
 "
 
 S = "${WORKDIR}/git"
 
 BUILD_DIR="${S}/build"
 
-
-RUNTIME:class-target = "llvm"
-TOOLCHAIN:class-target = "clang"
-PREFERRED_PROVIDER_libgcc:class-target = "compiler-rt"
-LIBCPLUSPLUS:class-target = "-stdlib=libc++"
 
 inherit pkgconfig
 
@@ -96,6 +88,9 @@ PACKAGECONFIG[vulkan] = "vulkan=yes use_volk=yes, vulkan=no use_volk=no, glslang
 PACKAGECONFIG[sowrap] = "use_sowrap=yes, use_sowrap=no"
 PACKAGECONFIG[debug] = "debug_symbols=yes, debug_symbols=no"
 
+PACKAGECONFIG[llvm] = "use_llvm=yes lto=full LINK='${CXX} ${LDFLAGS} -fuse-ld=lld', \
+                       use_llvm=no LINK='${CXX} ${LDFLAGS}'"
+
 PACKAGECONFIG[alsa] = "alsa=yes, alsa=no, alsa-lib"
 PACKAGECONFIG[dbus] = "dbus=yes, dbus=no, dbus"
 PACKAGECONFIG[fontconfig] = "fontconfig=yes, fontconfig=no, fontconfig"
@@ -128,10 +123,8 @@ do_compile:class-target () {
 
     cd ${S}
     scons p=linuxbsd target=editor arch=${TARGET_ARCH_NAME} \
-        use_llvm=yes \
         use_static_cpp=yes \
         optimize=speed \
-        lto=thin \
         progress=yes \
         no_editor_splash=yes \
         num_jobs=${BB_NUMBER_THREADS} \
@@ -139,7 +132,6 @@ do_compile:class-target () {
         CC="${CC}" cflags="${CFLAGS}" \
         CXX="${CXX}" cxxflags="${CXXFLAGS}" \
         AS="${AS}" AR="${AR}" RANLIB="${RANLIB}" \
-        LINK="${CXX} ${LDFLAGS} -fuse-ld=lld" \
         import_env_vars=PATH,PKG_CONFIG_DIR,PKG_CONFIG_DISABLE_UNINSTALLED,PKG_CONFIG_LIBDIR,PKG_CONFIG_PATH,PKG_CONFIG_SYSROOT_DIR,PKG_CONFIG_SYSTEM_INCLUDE_PATH,PKG_CONFIG_SYSTEM_LIBRARY_PATH
 }
 
@@ -151,8 +143,10 @@ do_install:class-native () {
 
 do_install:class-target () {
 
+    EDITOR="$(find ${S}/bin -iname godot.linuxbsd.editor*)"
+
     install -d ${D}${bindir}
-    install -m0755 ${S}/bin/godot.linuxbsd.editor.${TARGET_ARCH_NAME}.llvm ${D}${bindir}/godot
+    install -m0755 "${EDITOR}" "${D}${bindir}/"
 }
 
 INSANE_SKIP:${PN} = "already-stripped"
