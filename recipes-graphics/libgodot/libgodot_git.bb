@@ -155,7 +155,7 @@ do_install:class-target () {
     EDITOR="$(find ${S}/bin -iname libgodot.linuxbsd.editor*.so)"
 
     install -d ${D}${libdir}
-    install -m0755 "${EDITOR}" "${D}${libdir}/"
+    install -m0755 "${EDITOR}" "${D}${libdir}/libgodot.so"
 }
 
 SOLIBS = ".so"

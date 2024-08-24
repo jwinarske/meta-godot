@@ -10,6 +10,7 @@ Aug 24, 2024
 7. update godot-tps-demo
 8. update libgodot to install libgodot.h
 9. update libgodot-sample
+10. rename libgodot artifact to libgodot.so
 
 Aug 19, 2024
 1. godot 4.3
