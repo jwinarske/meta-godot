@@ -19,14 +19,14 @@ DEPENDS += " \
 
 SRC_URI = " \
     git://github.com/godotengine/godot-cpp-template.git;protocol=https;lfs=0;branch=main;name=godot_cpp_template \
-    git://github.com/godotengine/godot-cpp.git;protocol=https;lfs=0;nobranch=1;name=godot_cpp;destsuffix=git/godot-cpp \
+    git://github.com/godotengine/godot-cpp.git;protocol=https;lfs=0;branch=master;name=godot_cpp;destsuffix=git/godot-cpp \
     file://CMakeLists.txt \
 "
 
 SRCREV_FORMAT .= "_godot_cpp_template"
-SRCREV_godot_cpp_template = "03a3cb3b190e5fbdc8e8c6ca930dfec26f7307e2"
+SRCREV_godot_cpp_template = "0536d636fa2aa8e2457f5013a85817537a6f3808"
 SRCREV_FORMAT .= "_godot_cpp"
-SRCREV_godot_cpp = "98c143a48365f3f3bf5f99d6289a2cb25e6472d1"
+SRCREV_godot_cpp = "fbbf9ec4efd8f1055d00edb8d926eef8ba4c2cce"
 
 
 S = "${WORKDIR}/git"

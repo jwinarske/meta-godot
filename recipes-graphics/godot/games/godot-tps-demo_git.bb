@@ -20,7 +20,7 @@ SRC_URI = " \
     git://github.com/godotengine/tps-demo.git;protocol=https;lfs=0;branch=master \
 "
 
-SRCREV = "7959fb1a20b68f98450f8b16c7bb39fea1ebe15a"
+SRCREV = "690ee91837aa64d74ba73bc925ec52886c879974"
 
 S = "${WORKDIR}/git"
 

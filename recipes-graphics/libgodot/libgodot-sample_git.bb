@@ -23,15 +23,15 @@ RDEPENDS:${PN} += " \
 "
 
 SRC_URI = " \
-    git://github.com/migeran/libgodot_project.git;protocol=https;lfs=0;branch=main;name=libgodot \
+    git://github.com/migeran/libgodot_project.git;protocol=https;lfs=0;branch=libgodot_migeran_next;name=libgodot \
     git://github.com/godotengine/godot-cpp.git;protocol=https;lfs=0;nobranch=1;name=godot_cpp;destsuffix=git/godot-cpp \
     file://CMakeLists.txt \
 "
 
 SRCREV_FORMAT .= "_libgodot"
-SRCREV_libgodot = "26fc59a757d4b31691bbf15e88c909cc921158b3"
+SRCREV_libgodot = "41b9a5781abea3f523b65557d118a2b4a02f968c"
 SRCREV_FORMAT .= "_godot_cpp"
-SRCREV_godot_cpp = "98c143a48365f3f3bf5f99d6289a2cb25e6472d1"
+SRCREV_godot_cpp = "19c83a8837738e5014cc35771820bcb8cb73a5ea"
 
 
 S = "${WORKDIR}/git"
@@ -54,10 +54,11 @@ do_configure:prepend() {
     cp ${WORKDIR}/CMakeLists.txt ${S}
     rm ${S}/samples/cpp_sample/CMakeLists.txt | true
 
-    mkdir -p ${WORKDIR}/generated && cd ${WORKDIR}/generated
-
     # generate required files
+    mkdir -p ${WORKDIR}/generated && cd ${WORKDIR}/generated
     libgodot --headless --dump-extension-api --dump-gdextension-interface
+
+    cp ${STAGING_INCDIR_NATIVE}/libgodot.h .
 
     cd ${B}
 }

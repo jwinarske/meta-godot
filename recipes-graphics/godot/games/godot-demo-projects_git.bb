@@ -17,10 +17,10 @@ RDEPENDS:${PN} += " \
 "
 
 SRC_URI = " \
-    git://github.com/godotengine/godot-demo-projects.git;protocol=https;lfs=0;branch=4.2 \
+    git://github.com/godotengine/godot-demo-projects.git;protocol=https;lfs=0;branch=master \
 "
 
-SRCREV = "98e9176b73105879f88de50705664bb7c7b852de"
+SRCREV = "31d1c0c1122717b3ad74aeb94255bc38def52747"
 
 S = "${WORKDIR}/git"
 

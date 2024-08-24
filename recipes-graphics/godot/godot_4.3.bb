@@ -164,7 +164,7 @@ RDEPENDS:${PN}:class-target += " \
     xdg-user-dirs \
 "
 
-RRECOMMENDS:${PN} += "\
+RRECOMMENDS:${PN}:class-target += "\
     adwaita-icon-theme-cursors \
     liberation-fonts \
     zenity \

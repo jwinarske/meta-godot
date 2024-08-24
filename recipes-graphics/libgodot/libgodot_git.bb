@@ -145,6 +145,9 @@ do_install:class-native () {
 
     install -d ${D}${bindir}
     install -m0755 ${S}/bin/godot.linuxbsd.editor.${TARGET_ARCH_NAME} ${D}${bindir}/libgodot
+
+    install -d ${D}${includedir}
+    install -m0644 ${S}/core/extension/libgodot.h ${D}${includedir}
 }
 
 do_install:class-target () {

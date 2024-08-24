@@ -26,7 +26,7 @@ SRC_URI = " \
 SRCREV_FORMAT .= "_gdextension_summator"
 SRCREV_gdextension_summator = "46a6b99b8e28fadb3764fbeb71d5669037046679"
 SRCREV_FORMAT .= "_godot_cpp"
-SRCREV_godot_cpp = "98c143a48365f3f3bf5f99d6289a2cb25e6472d1"
+SRCREV_godot_cpp = "fbbf9ec4efd8f1055d00edb8d926eef8ba4c2cce"
 
 
 S = "${WORKDIR}/git"
