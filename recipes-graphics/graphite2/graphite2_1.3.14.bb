@@ -13,10 +13,13 @@ DEPENDS += "freetype"
 SRCREV = "92f59dcc52f73ce747f1cdc831579ed2546884aa"
 SRC_URI = "git://github.com/silnrsi/graphite.git;protocol=https;branch=master"
 
-S = "${WORKDIR}/git"
 
 inherit cmake
 
 EXTRA_OECMAKE += "-DLIB_SUFFIX=${@d.getVar('baselib').replace('lib', '')}"
+# 1.3.14 declares cmake_minimum_required < 3.5, rejected by CMake 4
+EXTRA_OECMAKE += "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+# tests (always built) use uint8_t without <cstdint> (GCC 13+)
+CXXFLAGS += "-include cstdint"
 
 BBCLASSEXTEND = "native"

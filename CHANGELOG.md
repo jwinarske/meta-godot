@@ -1,5 +1,20 @@
 # Changelog
 
+Oct 13, 2026
+1. godot 4.7.2 (master: whinlatter/wrynose/blacksail, UNPACKDIR)
+2. libgodot built from upstream godot 4.7.2 (library_type=shared_library); drop migeran fork
+3. shared godot.inc for godot and libgodot
+4. libgodot-sample: layer-owned host using upstream libgodot API + godot-cpp master
+5. drop obsolete wayland-egl-core patch; refresh clang and AS/AR/RANLIB patches
+6. honor PARALLEL_MAKE for scons num_jobs; accesskit disabled by default
+7. pass LDFLAGS via scons linkflags (GNU_HASH QA)
+8. use bundled harfbuzz by default; 4.7 needs harfbuzz-raster/-vector
+9. drop zenity from godot RRECOMMENDS (pulls in webkitgtk)
+10. graphite2: CMAKE_POLICY_VERSION_MINIMUM=3.5, include cstdint for tests
+11. drop S/destsuffix=git overrides; use default ${BP}
+12. libgodot-sample: RelWithDebInfo so godot-cpp doesn't strip at link
+13. compile-tested for riscv64 (visionfive2, core-image-weston, master)
+
 Aug 24, 2024
 1. create dynamic-layer for clang-layer
 2. remove ttf-noto recipe

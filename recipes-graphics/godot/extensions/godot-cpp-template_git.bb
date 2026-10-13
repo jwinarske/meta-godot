@@ -19,7 +19,7 @@ DEPENDS += " \
 
 SRC_URI = " \
     git://github.com/godotengine/godot-cpp-template.git;protocol=https;lfs=0;branch=main;name=godot_cpp_template \
-    git://github.com/godotengine/godot-cpp.git;protocol=https;lfs=0;branch=master;name=godot_cpp;destsuffix=git/godot-cpp \
+    git://github.com/godotengine/godot-cpp.git;protocol=https;lfs=0;branch=master;name=godot_cpp;destsuffix=${BP}/godot-cpp \
     file://CMakeLists.txt \
 "
 
@@ -29,7 +29,6 @@ SRCREV_FORMAT .= "_godot_cpp"
 SRCREV_godot_cpp = "fbbf9ec4efd8f1055d00edb8d926eef8ba4c2cce"
 
 
-S = "${WORKDIR}/git"
 
 inherit pkgconfig cmake
 
@@ -38,7 +37,7 @@ PACKAGECONFIG ??= " single"
 PACKAGECONFIG[single] = "-DFLOAT_PRECISION=single, -DFLOAT_PRECISION=double"
 
 do_configure:prepend() {
-    mv ${WORKDIR}/CMakeLists.txt ${S}
+    mv ${UNPACKDIR}/CMakeLists.txt ${S}
 }
 
 SOLIBS = ".so"
