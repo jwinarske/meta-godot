@@ -29,5 +29,5 @@ Optional: `meta-clang` (clang build of `godot-native`), `meta-gnome`.
 ## Running
 
 ```
-godot.linuxbsd.editor.<arch> --display-driver wayland --rendering-driver vulkan
+godot --display-driver wayland --rendering-driver vulkan
 ```
