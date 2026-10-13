@@ -17,7 +17,7 @@ do_install:class-target () {
     EDITOR="$(find ${S}/bin -iname 'godot.linuxbsd.${GODOT_TARGET}*')"
 
     install -d ${D}${bindir}
-    install -m0755 "${EDITOR}" "${D}${bindir}/"
+    install -m0755 "${EDITOR}" "${D}${bindir}/godot"
 }
 
 FILES:${PN}-dev:class-native += "${datadir}"

@@ -9,7 +9,7 @@ HOMEPAGE = "https://github.com/godotengine/tps-demo"
 BUGTRACKER = "https://github.com/godotengine/tps-demo/issues"
 SECTION = "graphics"
 
-LICENSE = "CC-BY-3.0&MIT"
+LICENSE = "CC-BY-3.0 AND MIT"
 LIC_FILES_CHKSUM = "file://LICENSE.md;md5=4f0aa3805663712e6417e4f6486cb791"
 
 RDEPENDS:${PN} += " \
