@@ -18,7 +18,7 @@ DEPENDS += " \
 
 SRC_URI = " \
     git://github.com/paddy-exe/GDExtensionSummator.git;protocol=https;lfs=0;branch=main;name=gdextension_summator \
-    git://github.com/godotengine/godot-cpp.git;protocol=https;lfs=0;nobranch=1;name=godot_cpp;destsuffix=git/godot-cpp \
+    git://github.com/godotengine/godot-cpp.git;protocol=https;lfs=0;nobranch=1;name=godot_cpp;destsuffix=${BP}/godot-cpp \
     file://CMakeLists.txt \
     file://export_presets.cfg \
 "
@@ -29,7 +29,6 @@ SRCREV_FORMAT .= "_godot_cpp"
 SRCREV_godot_cpp = "fbbf9ec4efd8f1055d00edb8d926eef8ba4c2cce"
 
 
-S = "${WORKDIR}/git"
 B = "${WORKDIR}/build"
 
 TARGET_ARCH_NAME:aarch64 = "arm64"
@@ -51,13 +50,13 @@ EXTRA_OECMAKE += " \
 "
 
 do_configure:prepend() {
-    cp ${WORKDIR}/CMakeLists.txt ${S}
+    cp ${UNPACKDIR}/CMakeLists.txt ${S}
 }
 
 do_install:append() {
 
     # copy and set architecture
-    cp ${WORKDIR}/export_presets.cfg ${S}/game/export_presets.cfg
+    cp ${UNPACKDIR}/export_presets.cfg ${S}/game/export_presets.cfg
     sed -i "s/x86_64/${TARGET_ARCH_NAME}/g" ${S}/game/export_presets.cfg
 
     install -d ${D}${datadir}/godot/gdsummator

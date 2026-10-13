@@ -22,7 +22,6 @@ SRC_URI = " \
 
 SRCREV = "31d1c0c1122717b3ad74aeb94255bc38def52747"
 
-S = "${WORKDIR}/git"
 
 do_install() {
 
