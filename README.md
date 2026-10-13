@@ -1,74 +1,33 @@
 # meta-godot
 
-Yocto layer for GODOT related recipes
+Yocto/OpenEmbedded layer for the [Godot](https://godotengine.org) engine.
 
-### RaspberryPi5 with Vulkan enabled core-image-weston image
+## Recipes
 
-conf/local.conf append
-```
-INHERIT += "rm_work"
+| Recipe | Description |
+|---|---|
+| `godot` | Godot 4.7.2 editor (target and native) |
+| `libgodot` | Godot 4.7.2 as a shared library (`libgodot.so`) |
+| `libgodot-sample` | minimal host app embedding `libgodot` |
+| `godot-demo-projects`, `godot-tps-demo` | demo projects |
+| `godot-cpp-template`, `gdextension-summator` | GDExtension examples |
 
-INIT_MANAGER = "systemd"
+## Compatibility
 
-# localization
-DEFAULT_TIMEZONE = "America/Los_Angeles"
-IMAGE_INSTALL:append = " \
-    tzdata-core \
-    tzdata-americas \
-"
+`master` branch: whinlatter, wrynose, blacksail. Use the `scarthgap` branch for scarthgap.
 
-DISTRO_FEATURES:append = " systemd alsa wifi bluetooth usbhost pipewire"
-DISTRO_FEATURES:remove = "sysvinit usbgadget ptest xen x11"
+## Dependencies
 
-COMBINED_FEATURES += "alsa "
-INIT_MANAGER = "systemd"
+- `openembedded-core`
 
-DISTRO_FEATURES:append = " opengl wayland pam"
-PACKAGECONFIG:append:pn-weston = " remoting"
+Optional: `meta-clang` (clang build of `godot-native`), `meta-gnome`.
 
-DISTRO_FEATURES:append = " vulkan"
-IMAGE_INSTALL:append = " \
-    vulkan-tools \
-"
+## Configuration
 
-DISTRO_FEATURES:append = " acl xattr pam selinux audit"
-PREFERRED_PROVIDER_virtual/refpolicy = "refpolicy-mls"
+`PACKAGECONFIG` follows `DISTRO_FEATURES` (`wayland`, `x11`, `opengl`, `vulkan`, `alsa`). Godot's bundled harfbuzz is used by default; `sys_harfbuzz` needs harfbuzz built with `raster` and `vector`.
 
-DISTRO_FEATURES:append = " security seccomp"
-
-DISTRO_FEATURES:append = " virtualization kvm"
-
-IMAGE_INSTALL:append = " \
-    kvmtool dmidecode \
-    libvirt libvirt-libvirtd libvirt-virsh \
-"
-
-LINUX_KERNEL_TYPE = "preempt-rt"
-CMDLINE_DEBUG = "quiet"
-DISPMANX_OFFLINE = "1"
-DISABLE_OVERSCAN = "1"
-DISABLE_RPI_BOOT_LOGO = "1"
-DISABLE_SPLASH = "1"
-IMAGE_FEATURES:remove = "splash"
-
-VIDEO_CAMERA = "1"
-RASPBERRYPI_CAMERA_V3 = "1"
-ENABLE_I2C = "1"
-KERNEL_MODULE_AUTOLOAD:rpi:append = " i2c-dev i2c-bcm2708"
-
-PREFERRED_PROVIDER_jpeg = "libjpeg-turbo"
-PREFERRED_PROVIDER_jpeg-native = "libjpeg-turbo-native"
-
-LICENSE_FLAGS_ACCEPTED += " synaptics-killswitch"
-```
-
-Running
-```
-godot --display-driver wayland --rendering-driver vulkan
-```
-
-### Layer Dependencies
+## Running
 
 ```
-meta-clang
+godot.linuxbsd.editor.<arch> --display-driver wayland --rendering-driver vulkan
 ```
